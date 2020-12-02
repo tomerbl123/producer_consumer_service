@@ -20,15 +20,14 @@ def producer(stats_queue, exe_file_path):
             logger.debug(f"about to parse line number {index}")
             parsed_stat_line = json.loads(line)
             stats_queue.put(parsed_stat_line)
-        except Exception:  # There are few possible decoding exceptions here, predicting all of them will be an overkill
+        except Exception:  # All exceptions will be handled the same way, there is no need to catch each of them
             logger.error(f"Stat line number {index} is not a valid JSON, skipping")
 
 
 def consumer(stats_queue, data_handler, stats_db):
     while True:
-        if not stats_queue.empty():
-            stat = stats_queue.get()
-            data_handler.handle_data(stat_line=stat, stats_db=stats_db)
+        stat = stats_queue.get(block=True)  # The block assures that no consumer will "steal" data for another consumer
+        data_handler.handle_data(stat_line=stat, stats_db=stats_db)
 
 
 @app.route('/', methods=['GET'])

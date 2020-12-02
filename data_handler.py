@@ -1,3 +1,5 @@
+import threading
+
 from base_logger import logger
 
 
@@ -30,18 +32,21 @@ class StatsFakeDatabase:
     def __init__(self):
         self._event_types_count = {}
         self._data_words_count = {}
+        self._lock = threading.Lock()  # Must lock the dictionary before updating it to avoid race conditions
 
     def increase_event_type_count(self, stat_event_type):
-        if stat_event_type in self._event_types_count:
-            self._event_types_count[stat_event_type] += 1
-        else:
-            self._event_types_count[stat_event_type] = 1
+        with self._lock:
+            if stat_event_type in self._event_types_count:
+                self._event_types_count[stat_event_type] += 1
+            else:
+                self._event_types_count[stat_event_type] = 1
 
     def increase_data_word_count(self, stat_data_word):
-        if stat_data_word in self._data_words_count:
-            self._data_words_count[stat_data_word] += 1
-        else:
-            self._data_words_count[stat_data_word] = 1
+        with self._lock:
+            if stat_data_word in self._data_words_count:
+                self._data_words_count[stat_data_word] += 1
+            else:
+                self._data_words_count[stat_data_word] = 1
 
     def get_event_types_stats(self):
         return self._event_types_count

@@ -20,5 +20,5 @@ The stats are (formed as JSONs):
 * Navigate to the config.json configuration file and insert the path of the .exe file.
 * If you'd like to change the amount of producers/consumers, do this in the configuration file as well (default is 1).
 * Navigate to the main.py file and execute it.
-* Open a browser and navigate to http://localhost:5000/big_panda_home_test/api/event_types or  
-  http://localhost:5000/big_panda_home_test/api/words to see the statistics.
+* Open a browser and navigate to your localhost/big_panda_home_test/api/event_types or  
+  localhost/big_panda_home_test/api/words to see the statistics.
