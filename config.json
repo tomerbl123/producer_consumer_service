@@ -1,0 +1,6 @@
+{
+  "EXE_FILE_PATH": "C:\\Users\\tomer\\Desktop\\generator-windows-amd64.exe",
+  "LOG_FORMAT": "%(levelname)s - %(asctime)s: %(message)s",
+  "NUM_OF_CONSUMERS": 1,
+  "NUM_OF_PRODUCERS": 1
+}

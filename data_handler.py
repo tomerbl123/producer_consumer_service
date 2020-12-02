@@ -1,46 +1,50 @@
-import json
-import logging
-
-# f = "%(asctime)s: %(message)s"
-# logging.basicConfig(format=f, level=logging.INFO, datefmt="%H:%M:%S")
+from base_logger import logger
 
 
 class DataHandler:
+    """
+    Acts as a "controller".
+    Gets parsed stats rows, runs quick validation and sends each row to the DB.
+    """
     _EVENT_TYPE_KEY = 'event_type'
     _DATA_KEY = 'data'
     _TIMESTAMP_KEY = 'timestamp'
 
-    def handle_data(self, stat_line, data_class):
+    def handle_data(self, stat_line, stats_db):
         try:
             stat_event_type = stat_line[self._EVENT_TYPE_KEY]
             stat_data_word = stat_line[self._DATA_KEY]
             stat_timestamp = stat_line[self._TIMESTAMP_KEY]
 
-            data_class.increase_event_type_count(stat_event_type)
-            data_class.increase_data_word_count(stat_data_word)
+            stats_db.increase_event_type_count(stat_event_type)
+            stats_db.increase_data_word_count(stat_data_word)
         except KeyError:
-            logging.info("Stat line is missing basic key, skipping stat")
+            logger.error("Stat line is missing basic key, skipping")
 
 
 class StatsFakeDatabase:
+    """
+    Acts as a fake DB.
+    Stores all the stats about event types and words counts while providing basic getters and setters methods.
+    """
     def __init__(self):
-        self.event_types_count = {}
-        self.data_words_count = {}
+        self._event_types_count = {}
+        self._data_words_count = {}
 
     def increase_event_type_count(self, stat_event_type):
-        if stat_event_type in self.event_types_count:
-            self.event_types_count[stat_event_type] += 1
+        if stat_event_type in self._event_types_count:
+            self._event_types_count[stat_event_type] += 1
         else:
-            self.event_types_count[stat_event_type] = 1
+            self._event_types_count[stat_event_type] = 1
 
     def increase_data_word_count(self, stat_data_word):
-        if stat_data_word in self.data_words_count:
-            self.data_words_count[stat_data_word] += 1
+        if stat_data_word in self._data_words_count:
+            self._data_words_count[stat_data_word] += 1
         else:
-            self.data_words_count[stat_data_word] = 1
+            self._data_words_count[stat_data_word] = 1
 
     def get_event_types_stats(self):
-        return json.dumps(self.event_types_count)
+        return self._event_types_count
 
     def get_data_words_stats(self):
-        return json.dumps(self.data_words_count)
+        return self._data_words_count
