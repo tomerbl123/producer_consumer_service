@@ -31,6 +31,13 @@ def consumer(stats_queue, data_handler, stats_db):
             data_handler.handle_data(stat_line=stat, stats_db=stats_db)
 
 
+@app.route('/', methods=['GET'])
+def home():
+    message = "There is nothing to see here :) navigate to either: /big_panda_home_test/api/event_types OR " \
+              "/big_panda_home_test/api/words to see the statistics."
+    return message
+
+
 @app.route('/big_panda_home_test/api/event_types', methods=['GET'])
 def get_event_types_stats():
     return jsonify({'event_types': stats_fake_db.get_event_types_stats()})
