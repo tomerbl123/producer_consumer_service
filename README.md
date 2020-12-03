@@ -19,6 +19,24 @@ The stats are (formed as JSONs):
 * Download the .exe file that generates events and locate it in a path of your desire.
 * Navigate to the config.json configuration file and insert the path of the .exe file.
 * If you'd like to change the amount of producers/consumers, do this in the configuration file as well (default is 1).
+* Install the dependencies using pip install -r requirements.txt.
 * Navigate to the main.py file and execute it.
 * Open a browser and navigate to your localhost/big_panda_home_test/api/event_types or  
   localhost/big_panda_home_test/api/words to see the statistics.
+
+### Bonus suggestion
+Reminder: add an option to get the stats from the last 60 seconds.  
+
+Use 2 stacks!  
+* Take all the valid data and insert it into a stack (in parallel to the regular database).
+* When the last 60 seconds data is requested:
+    * Verify the stack is not empty.
+    * Peek every item and check:
+        * If now - timestamp > 60 seconds:
+            * Pop the item.
+            * Add stats to general dictionary (if already exists increment, else create new one).
+            * Enqueue the item into temp Stack.
+        * When no more items are left from the last 60 seconds:
+            * Pop item from the temp Stack.
+            * Enqueue item to original Stack.
+        * When temp Stack is empty, return results.
